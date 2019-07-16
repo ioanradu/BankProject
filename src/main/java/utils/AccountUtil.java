@@ -31,6 +31,7 @@ public class AccountUtil {
         return CurrencyType.NO_CURRENCY;
     }
 
+
     public static boolean isNumber(String balanceStr) {
         boolean isANumber = false;
         for (int i = 0; i < balanceStr.length(); i++) {

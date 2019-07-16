@@ -63,13 +63,23 @@ public class AccountService {
     }
 
     public Account createAccount() {
+        Account account = null;
         Scanner scanner = new Scanner(System.in);
         boolean isValidAccount = false;
+        boolean isValidAccountId = false;
         String accountId = "";
-        while (!isValidAccount) {
+        while (!isValidAccount || !isValidAccountId) {
             System.out.println("\nAccount number (should start with \'RO' and should have 10 characters): ");
             accountId = scanner.nextLine();
             isValidAccount = AccountUtil.isValidId(accountId);
+            if (isValidAccount) {
+                account = user.getAccounts().get(accountId);
+                if (account == null) {
+                    isValidAccountId = true;
+                } else {
+                    System.out.println("Account already exists, please enter a new one. ");
+                }
+            }
         }
 
         boolean isValidNumber = false;
@@ -88,28 +98,27 @@ public class AccountService {
                 }
             }
         }
+
         String currencyStr = "";
-        String[] array = {"RON", "ron", "EUR", "eur"};
         boolean isCurrency = false;
         while (!isCurrency) {
             System.out.println("Currency of your newly created account is: ");
             currencyStr = scanner.nextLine();
-            for (int i = 0; i < array.length; i++) {
-                if (currencyStr.equals(array[i])) {
-                    System.out.println(currencyStr);
-                    isCurrency = true;
-                    break;
-                }
+            if (!AccountUtil.isValidCurrencyType(currencyStr)) {
+                System.out.println(currencyStr + " are not allowed, only RON and EUR are allowed");
+            } else {
+                isCurrency = true;
             }
         }
 
         CurrencyType currency = AccountUtil.getCurrencyType(currencyStr);
-        Account account = new Account(user.getUserId(), accountId, balance, currency);
+        account = new Account(user.getUserId(), accountId, balance, currency);
         user.addAccount(account);
+        System.out.println("The account has been created!");
         return account;
     }
 
-    public void makePayments(){
+    public void makePayments() {
 
     }
 }
