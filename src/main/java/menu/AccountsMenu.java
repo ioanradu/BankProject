@@ -38,7 +38,8 @@ public class AccountsMenu extends AbstractMenu {
                 txtFileWriter.write(buildString(account));
                 break;
             case 3:
-
+                accountService.makePayments();
+                accountService.displayCurrentInfo();
                 break;
             case 4:
                 accountService.displayCurrentInfo();
