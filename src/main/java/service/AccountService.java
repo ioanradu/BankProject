@@ -90,13 +90,11 @@ public class AccountService {
             System.out.println("Amount of money is : ");
             balanceStr = scanner.nextLine();
             isValidNumber = AccountUtil.isNumber(balanceStr);
-
             if (isValidNumber) {
                 balance = new BigDecimal(Integer.parseInt(balanceStr));
-                while (balance.compareTo(BigDecimal.ZERO) == -1) {
-                    System.out.println("Amount of money is : ");
-                    balanceStr = scanner.nextLine();
-                    balance = new BigDecimal(Integer.parseInt(balanceStr));
+                if (balance.compareTo(BigDecimal.ZERO) == -1) {
+                    System.out.println("The amount of money must be positive : ");
+                    isValidNumber = false;
                 }
             }
         }
@@ -121,10 +119,9 @@ public class AccountService {
         return account;
     }
 
-    public void makePayments() {
+    public void makePayments() throws NegativeNumberException {
 
         logger.info(user.toString());
-
         // VERIFICAM DACA CONTUL SURSA ESTE SELECTAT CORECT
         boolean isSourceAccount = false;
         Account sourceAccount = null;
@@ -136,7 +133,7 @@ public class AccountService {
             sourceAccount = user.getAccounts().get(sourceAccountStr);
 
             if (sourceAccount == null) {
-                System.out.println("Please enter the account correctly!");
+                System.out.println("Account you entered is not in your account's list!");
             } else {
                 isSourceAccount = true;
             }
@@ -149,12 +146,16 @@ public class AccountService {
             System.out.println("Please enter the amount of money you want to transfer");
             balanceAccount = scanner.nextLine();
             isValidNumber = AccountUtil.isNumber(balanceAccount);
+
             if (isValidNumber) {
                 balanceTransfer = new BigDecimal(Integer.parseInt(balanceAccount));
-                if (balanceTransfer.compareTo(BigDecimal.ZERO) == 0 || balanceTransfer.compareTo(BigDecimal.ZERO) == -1) {
+                //VERIFICAM DACA SUMA DE TRANSFER ESTE UN NUMAR POZITIV SAU NEGATIV
+                //DACA E NUMAR NEGATIV ARUNCAM EXCEPTIA NEGATIVE NUMBER EXCEPTION
+                if (balanceTransfer.compareTo(BigDecimal.ZERO) <= 0) {
                     System.out.println("The amount of money you want to transfer must be greater than 0");
-                    isValidNumber = false;
-                    //VALIDAM DACA SUMA DE TRANSFER E MAI MICA SAU EGALA CU SUMA DIN CONT
+                    throw new NegativeNumberException();
+
+                    //VERIFICAM DACA SUMA DE TRANSFER E MAI MICA SAU EGALA CU SUMA DIN CONT
                 } else if (balanceTransfer.compareTo(sourceAccount.getBalance()) == 1) {
                     System.out.println("You entered a grater amount of money than account has: ");
                     isValidNumber = false;
@@ -192,5 +193,6 @@ public class AccountService {
         BigDecimal addBalance = destAccount.getBalance().add(balanceTransfer);
         sourceAccount.setBalance(subtractBalance);
         destAccount.setBalance(addBalance);
+        System.out.println("The payment have been done successfully!");
     }
 }

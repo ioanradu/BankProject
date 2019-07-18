@@ -31,13 +31,14 @@ public class AccountUtil {
         return CurrencyType.NO_CURRENCY;
     }
 
-
     public static boolean isNumber(String balanceStr) {
         boolean isANumber = false;
-        for (int i = 0; i < balanceStr.length(); i++) {
-            isANumber = Character.isDigit(balanceStr.charAt(i));
-            if (isANumber == false) {
-                return false;
+        if (balanceStr.charAt(0) == '-' || Character.isDigit(balanceStr.charAt(0))) {
+            for (int i = 1; i < balanceStr.length(); i++) {
+                isANumber = Character.isDigit(balanceStr.charAt(i));
+                if (isANumber == false) {
+                    return false;
+                }
             }
         }
         return isANumber;

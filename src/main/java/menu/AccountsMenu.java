@@ -38,7 +38,11 @@ public class AccountsMenu extends AbstractMenu {
                 txtFileWriter.write(buildString(account));
                 break;
             case 3:
-                accountService.makePayments();
+                try {
+                    accountService.makePayments();
+                } catch (Exception e) {
+                    System.out.println("Something went wrong during transaction. Payment not done!");
+                }
                 accountService.displayCurrentInfo();
                 break;
             case 4:
